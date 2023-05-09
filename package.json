@@ -1,0 +1,9 @@
+{
+  "name": "movieScene",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/kmww/MovieScene.git",
+  "author": "kmww <kmw9708@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
