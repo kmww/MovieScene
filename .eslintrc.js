@@ -15,10 +15,11 @@ module.exports = {
     node: true,
   },
   rules: {
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'max-len': [
       'error',
       {
-        code: 120,
+        code: 80,
         tabWidth: 2,
         ignoreComments: true,
         ignoreTrailingComments: true,
