@@ -46,7 +46,7 @@ export type Query = {
 export type FilmsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FilmsQuery = { __typename?: 'Query', films: Array<{ __typename?: 'Film', id: number, title: string, subtitle?: string | null }> };
+export type FilmsQuery = { __typename?: 'Query', films: Array<{ __typename?: 'Film', id: number, title: string, subtitle?: string | null, runningTime: number, director_id: number, release: string, posterImg: string }> };
 
 
 export const FilmsDocument = gql`
@@ -55,6 +55,10 @@ export const FilmsDocument = gql`
     id
     title
     subtitle
+    runningTime
+    director_id
+    release
+    posterImg
   }
 }
     `;
