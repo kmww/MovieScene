@@ -1,4 +1,4 @@
-import { Box, SimpleGrid } from '@chakra-ui/react';
+import { Box, SimpleGrid, Skeleton } from '@chakra-ui/react';
 import { useFilmsQuery } from '../../generated/graphql';
 import FilmCard from './FilmCard';
 
@@ -9,7 +9,8 @@ const FilmList = () => {
 
   return (
     <SimpleGrid columns={[2, null, 3]} spacing={[2, null, 10]}>
-      {loading && <p>loading...</p>}
+      {loading &&
+        new Array(6).fill(0).map((x) => <Skeleton key={x} height="400px" />)}
       {!loading &&
         data &&
         data.films.map((film) => (
