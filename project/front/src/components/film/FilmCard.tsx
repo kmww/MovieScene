@@ -11,7 +11,7 @@ import {
 import { FilmsQuery } from '../../generated/graphql';
 
 interface FilmCardProps {
-  film: FilmsQuery['films'][0];
+  film: FilmsQuery['films']['films'][0];
 }
 
 const FilmCard = ({ film }: FilmCardProps) => {
