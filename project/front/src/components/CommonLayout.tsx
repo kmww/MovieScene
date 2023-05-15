@@ -1,5 +1,6 @@
-import { BackgroundProps, Box, Flex } from '@chakra-ui/react';
+import { BackgroundProps, Box } from '@chakra-ui/react';
 import { ReactNode, ReactElement } from 'react';
+import Navbar from './nav/Navbar';
 
 interface CommonLayoutProps {
   children: ReactNode;
@@ -9,9 +10,7 @@ interface CommonLayoutProps {
 const CommonLayout = ({ children, bg }: CommonLayoutProps): ReactElement => {
   return (
     <div>
-      <Flex maxW="960px" justify="center">
-        navigation
-      </Flex>
+      <Navbar />
       <Box
         px={{ base: 4 }}
         pt={24}
