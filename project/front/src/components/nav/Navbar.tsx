@@ -1,6 +1,14 @@
-import { Box, Flex, useColorModeValue, Link } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  useColorModeValue,
+  Link,
+  Stack,
+  Button,
+} from '@chakra-ui/react';
 import { ReactElement } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { ColorModeSwitcher } from '../ColorModeSwitcher';
 
 const Navbar = (): ReactElement => {
   return (
@@ -33,6 +41,19 @@ const Navbar = (): ReactElement => {
             BestCut
           </Link>
         </Flex>
+
+        <Stack justify="flex-end" direction="row" spacing={6}>
+          <ColorModeSwitcher />
+          <Button
+            fontSize="sm"
+            fontWeight={400}
+            variant="link"
+            as={RouterLink}
+            to="/login"
+          >
+            로그인
+          </Button>
+        </Stack>
       </Flex>
     </Box>
   );
