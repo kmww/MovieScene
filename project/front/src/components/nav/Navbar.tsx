@@ -53,6 +53,16 @@ const Navbar = (): ReactElement => {
           >
             로그인
           </Button>
+          <Button
+            display={{ base: 'none', md: 'inline-flex' }}
+            fontSize="sm"
+            fontWeight={600}
+            colorScheme="teal"
+            as={RouterLink}
+            to="/signup"
+          >
+            시작하기
+          </Button>
         </Stack>
       </Flex>
     </Box>
