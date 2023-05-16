@@ -9,7 +9,7 @@ interface CommonLayoutProps {
 
 const CommonLayout = ({ children, bg }: CommonLayoutProps): ReactElement => {
   return (
-    <div>
+    <Box>
       <Navbar />
       <Box
         px={{ base: 4 }}
@@ -22,7 +22,7 @@ const CommonLayout = ({ children, bg }: CommonLayoutProps): ReactElement => {
       >
         {children}
       </Box>
-    </div>
+    </Box>
   );
 };
 
