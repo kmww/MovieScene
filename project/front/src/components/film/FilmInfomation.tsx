@@ -36,6 +36,9 @@ const FilmInfomation = ({ film }: FilmInfomationProps): ReactElement => {
           {film?.title}
           {film?.release ? `(${new Date(film.release).getFullYear()})` : null}
         </Heading>
+        <Heading size="md" mb={2}>
+          {film?.subtitle}
+        </Heading>
         <Text mb={2}>
           {film?.director.name}
           {' • '} {film ? `${film.runningTime}분` : ''}
