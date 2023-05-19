@@ -2,11 +2,11 @@ import { ReactElement } from 'react';
 import { FilmQuery } from '../../generated/graphql';
 import { Box, Flex, Heading, Image, Tag, Text } from '@chakra-ui/react';
 
-interface FilmInfomationProps {
+interface FilmInfoProps {
   film: FilmQuery['film'];
 }
 
-const FilmInfomation = ({ film }: FilmInfomationProps): ReactElement => {
+const FilmInfo = ({ film }: FilmInfoProps): ReactElement => {
   return (
     <Flex
       mt={12}
@@ -49,4 +49,4 @@ const FilmInfomation = ({ film }: FilmInfomationProps): ReactElement => {
   );
 };
 
-export default FilmInfomation;
+export default FilmInfo;
