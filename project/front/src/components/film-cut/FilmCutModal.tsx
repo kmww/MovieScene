@@ -4,7 +4,9 @@ import {
   Center,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
+  ModalHeader,
   ModalOverlay,
   Spinner,
   useBreakpointValue,
@@ -37,10 +39,12 @@ const FilmCutModal = ({
       preserveScrollBarGap
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent pt={2}>
+        <ModalHeader>{data?.cut?.film?.title}</ModalHeader>
+        <ModalCloseButton mt={3} />
         <ModalBody>
           {loading && (
-            <Center>
+            <Center py={4}>
               <Spinner />
             </Center>
           )}
