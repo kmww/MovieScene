@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   HStack,
+  Heading,
   Image,
 } from '@chakra-ui/react';
 import { FaHeart } from 'react-icons/fa';
@@ -21,8 +22,9 @@ const FilmCutInfo = ({ cutImg, cutId }: FilmCutInfoProps) => {
       </AspectRatio>
 
       <Box py={4}>
-        <Flex justify="space-between" alignItems="cneter">
-          <HStack spacing={1} alignItems="cneter">
+        <Flex justify="space-between" alignItems="center">
+          <Heading size="sm">{cutId}번째 사진</Heading>
+          <HStack spacing={1} alignItems="center">
             <Button aria-label="like-this-cut-button" leftIcon={<FaHeart />} />
             <Button colorScheme="teal">리뷰 남기기</Button>
           </HStack>
