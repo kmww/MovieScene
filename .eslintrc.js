@@ -15,6 +15,14 @@ module.exports = {
     node: true,
   },
   rules: {
+    'import/no-extraneous-dependencies': [
+      'off',
+      {
+        devDependencies: true,
+        optionalDependencies: true,
+        peerDependencies: true,
+      },
+    ],
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'max-len': [
       'error',
