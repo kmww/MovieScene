@@ -18,6 +18,7 @@ export type Scalars = {
 
 export type Cut = {
   __typename?: 'Cut';
+  film?: Maybe<Film>;
   /** 영화 아이디 */
   filmId: Scalars['Int'];
   /** 명장면 고유 아이디 */
@@ -63,9 +64,15 @@ export type PaginatedFilms = {
 
 export type Query = {
   __typename?: 'Query';
+  cut?: Maybe<Cut>;
   cuts: Array<Cut>;
   film?: Maybe<Film>;
   films: PaginatedFilms;
+};
+
+
+export type QueryCutArgs = {
+  cutId: Scalars['Int'];
 };
 
 
@@ -83,6 +90,13 @@ export type QueryFilmsArgs = {
   cursor?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
 };
+
+export type CutQueryVariables = Exact<{
+  cutId: Scalars['Int'];
+}>;
+
+
+export type CutQuery = { __typename?: 'Query', cut?: { __typename?: 'Cut', id: number, src: string, film?: { __typename?: 'Film', id: number, title: string } | null } | null };
 
 export type CutsQueryVariables = Exact<{
   filmId: Scalars['Int'];
@@ -107,6 +121,46 @@ export type FilmsQueryVariables = Exact<{
 export type FilmsQuery = { __typename?: 'Query', films: { __typename?: 'PaginatedFilms', cursor?: number | null, films: Array<{ __typename?: 'Film', id: number, title: string, subtitle?: string | null, runningTime: number, release: string, posterImg: string, director: { __typename?: 'Director', name: string } }> } };
 
 
+export const CutDocument = gql`
+    query cut($cutId: Int!) {
+  cut(cutId: $cutId) {
+    id
+    src
+    film {
+      id
+      title
+    }
+  }
+}
+    `;
+
+/**
+ * __useCutQuery__
+ *
+ * To run a query within a React component, call `useCutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCutQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCutQuery({
+ *   variables: {
+ *      cutId: // value for 'cutId'
+ *   },
+ * });
+ */
+export function useCutQuery(baseOptions: Apollo.QueryHookOptions<CutQuery, CutQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CutQuery, CutQueryVariables>(CutDocument, options);
+      }
+export function useCutLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CutQuery, CutQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CutQuery, CutQueryVariables>(CutDocument, options);
+        }
+export type CutQueryHookResult = ReturnType<typeof useCutQuery>;
+export type CutLazyQueryHookResult = ReturnType<typeof useCutLazyQuery>;
+export type CutQueryResult = Apollo.QueryResult<CutQuery, CutQueryVariables>;
 export const CutsDocument = gql`
     query cuts($filmId: Int!) {
   cuts(filmId: $filmId) {
