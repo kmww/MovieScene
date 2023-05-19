@@ -9,6 +9,7 @@ import {
   Spinner,
   useBreakpointValue,
 } from '@chakra-ui/react';
+import FilmCutInfo from './FilmCutInfo';
 
 interface FilmCutModalProps {
   open: boolean;
@@ -44,7 +45,9 @@ const FilmCutModal = ({
             </Center>
           )}
           {!loading && !data && <Center>데이터를 불러오지 못했습니다.</Center>}
-          {data && data.cut && <div>film cut infomation</div>}
+          {data && data.cut && (
+            <FilmCutInfo cutImg={data.cut.src} cutId={data.cut.id} />
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>
