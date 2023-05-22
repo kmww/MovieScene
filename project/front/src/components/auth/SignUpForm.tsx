@@ -1,5 +1,44 @@
-import { Box, Heading, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { ReactElement } from 'react';
+import { useSignUpMutation } from '../../generated/graphql';
+
+const SignUpRealForm = () => {
+  const [signUp, { loading }] = useSignUpMutation();
+  return (
+    <Stack as="form" spacing={4}>
+      <FormControl>
+        <FormLabel>이메일</FormLabel>
+        <Input type="email" placeholder="example@example.com" />
+      </FormControl>
+
+      <FormControl>
+        <FormLabel>아이디</FormLabel>
+        <Input type="text" placeholder="example" />
+      </FormControl>
+
+      <FormControl>
+        <FormLabel>비밀번호</FormLabel>
+        <Input type="password" placeholder="8자 이상의 영문,숫자,특문" />
+      </FormControl>
+
+      <Divider />
+      <Button colorScheme="teal" type="submit" isLoading={loading}>
+        계정 생성
+      </Button>
+    </Stack>
+  );
+};
 
 const SignUpForm = (): ReactElement => {
   return (
@@ -17,7 +56,7 @@ const SignUpForm = (): ReactElement => {
         boxShadow="lg"
         p={8}
       >
-        입력창 위치
+        <SignUpRealForm />
       </Box>
     </Stack>
   );
