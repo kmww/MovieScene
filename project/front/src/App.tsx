@@ -4,6 +4,7 @@ import { createApolloClient } from './apollo/createApolloClient';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MainPage from './pages/main';
 import FilmDetail from './pages/filmDetail';
+import SignUp from './pages/signUp';
 
 const apolloClient = createApolloClient();
 
@@ -13,6 +14,7 @@ export const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/film/:filmId" element={<FilmDetail />} />
         </Routes>
       </BrowserRouter>
