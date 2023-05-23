@@ -3,6 +3,7 @@ import {
   Button,
   Divider,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
@@ -11,25 +12,60 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { ReactElement } from 'react';
-import { useSignUpMutation } from '../../generated/graphql';
+import {
+  SignUpMutationVariables,
+  useSignUpMutation,
+} from '../../generated/graphql';
+import { useForm } from 'react-hook-form';
 
 const SignUpRealForm = () => {
   const [signUp, { loading }] = useSignUpMutation();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpMutationVariables>();
+
   return (
-    <Stack as="form" spacing={4}>
-      <FormControl>
+    <Stack
+      as="form"
+      spacing={4}
+      onSubmit={handleSubmit((data) => console.log(data))}
+    >
+      <FormControl isInvalid={!!errors.signUpInput?.email}>
         <FormLabel>이메일</FormLabel>
-        <Input type="email" placeholder="example@example.com" />
+        <Input
+          type="email"
+          placeholder="example@example.com"
+          {...register('signUpInput.email')}
+        />
+        <FormErrorMessage>
+          {errors.signUpInput?.email && errors.signUpInput.email.message}
+        </FormErrorMessage>
       </FormControl>
 
-      <FormControl>
+      <FormControl isInvalid={!!errors.signUpInput?.username}>
         <FormLabel>아이디</FormLabel>
-        <Input type="text" placeholder="example" />
+        <Input
+          type="text"
+          placeholder="example"
+          {...register('signUpInput.username')}
+        />
+        <FormErrorMessage>
+          {errors.signUpInput?.username && errors.signUpInput.username.message}
+        </FormErrorMessage>
       </FormControl>
 
-      <FormControl>
+      <FormControl isInvalid={!!errors.signUpInput?.password}>
         <FormLabel>비밀번호</FormLabel>
-        <Input type="password" placeholder="8자 이상의 영문,숫자,특문" />
+        <Input
+          type="password"
+          placeholder="8자 이상의 영문,숫자,특문"
+          {...register('signUpInput.password')}
+        />
+        <FormErrorMessage>
+          {errors.signUpInput?.password && errors.signUpInput.password.message}
+        </FormErrorMessage>
       </FormControl>
 
       <Divider />
