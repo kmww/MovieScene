@@ -1,7 +1,31 @@
-import { Box, Heading, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { ReactElement } from 'react';
+import { useForm } from 'react-hook-form';
+import { LoginMutationVariables } from '../../generated/graphql';
 
 const LoginForm = (): ReactElement => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginMutationVariables>();
+
+  const onSubmit = (formData: LoginMutationVariables) => {
+    console.log(formData);
+  };
+
   return (
     <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
       <Stack align="center">
@@ -16,7 +40,43 @@ const LoginForm = (): ReactElement => {
         boxShadow="lg"
         p={8}
       >
-        아이디, 비밀번호 입력 폼
+        <Stack as="form" spacing={4} onSubmit={handleSubmit(onSubmit)}>
+          <FormControl isInvalid={!!errors.loginInput?.emailOrUsername}>
+            <FormLabel>이메일 또는 아이디</FormLabel>
+            <Input
+              type="emailOrUsername"
+              placeholder="이메일 또는 아이디를 입력하세요."
+              {...register('loginInput.emailOrUsername', {
+                required: '이메일 또는 아디를 입력해주세요.',
+              })}
+            />
+            <FormErrorMessage>
+              {errors.loginInput?.emailOrUsername &&
+                errors.loginInput.emailOrUsername.message}
+            </FormErrorMessage>
+          </FormControl>
+
+          <FormControl isInvalid={!!errors.loginInput?.password}>
+            <FormLabel>암호</FormLabel>
+            <Input
+              type="password"
+              placeholder="*********"
+              {...register('loginInput.password', {
+                required: '암호를 입력해주세요.',
+              })}
+            />
+            <FormErrorMessage>
+              {errors.loginInput?.password &&
+                errors.loginInput.password.message}
+            </FormErrorMessage>
+          </FormControl>
+
+          <Divider />
+
+          <Button colorScheme="teal" type="submit">
+            로그인
+          </Button>
+        </Stack>
       </Box>
     </Stack>
   );
