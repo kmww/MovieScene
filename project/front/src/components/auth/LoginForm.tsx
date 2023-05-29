@@ -13,17 +13,36 @@ import {
 } from '@chakra-ui/react';
 import { ReactElement } from 'react';
 import { useForm } from 'react-hook-form';
-import { LoginMutationVariables } from '../../generated/graphql';
+import {
+  LoginMutationVariables,
+  useLoginMutation,
+} from '../../generated/graphql';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = (): ReactElement => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginMutationVariables>();
+  const navigate = useNavigate();
+  const [login, { loading }] = useLoginMutation();
 
-  const onSubmit = (formData: LoginMutationVariables) => {
-    console.log(formData);
+  const onSubmit = async (formData: LoginMutationVariables) => {
+    const { data } = await login({ variables: formData });
+    if (data?.login.errors) {
+      data.login.errors.forEach((error) => {
+        const field = 'loginInput.';
+        setError((field + error.field) as Parameters<typeof setError>[0], {
+          message: error.message,
+        });
+      });
+    }
+    if (data && data.login.accessToken) {
+      localStorage.setItem('access_token', data.login.accessToken);
+      navigate('/');
+    }
   };
 
   return (
@@ -73,7 +92,7 @@ const LoginForm = (): ReactElement => {
 
           <Divider />
 
-          <Button colorScheme="teal" type="submit">
+          <Button colorScheme="teal" type="submit" isLoading={loading}>
             로그인
           </Button>
         </Stack>
