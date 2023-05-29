@@ -68,10 +68,14 @@ export class UserResolver {
   ): Promise<LoginResponse> {
     const { emailOrUsername, password } = loginInput;
 
-    const user = await User.findOne({ where: { emailOrUsername } });
+    const user = await User.findOne({
+      where: [{ email: emailOrUsername }, { username: emailOrUsername }],
+    });
     if (!user)
       return {
-        errors: [{ field: 'email', message: '해당하는 유저가 없습니다.' }],
+        errors: [
+          { field: 'emailOrUsername', message: '해당하는 유저가 없습니다.' },
+        ],
       };
 
     const isValid = await argon2.verify(user.password, password);
