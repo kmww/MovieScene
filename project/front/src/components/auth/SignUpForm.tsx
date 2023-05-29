@@ -108,6 +108,7 @@ const SignUpForm = (): ReactElement => {
         rounded="lg"
         bg={useColorModeValue('white', 'gray.700')}
         boxShadow="lg"
+        minW="lg"
         p={8}
       >
         <SignUpRealForm />
