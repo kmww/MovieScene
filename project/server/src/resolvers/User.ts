@@ -8,7 +8,7 @@ import {
   Resolver,
 } from 'type-graphql';
 import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
+import { createAccessToken } from '../utils/jwt-auth';
 import User from '../entities/User';
 
 @InputType()
@@ -87,11 +87,7 @@ export class UserResolver {
         ],
       };
 
-    const accessToken = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET_KEY || 'secret-key',
-      { expiresIn: '30m' },
-    );
+    const accessToken = createAccessToken(user);
 
     return { user, accessToken };
   }
