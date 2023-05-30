@@ -2,6 +2,10 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { Request, Response } from 'express';
+import {
+  JwtVerifiedUser,
+  verifyAccessTokenFromReqHeaders,
+} from '../utils/jwt-auth';
 import { CutResolver } from '../resolvers/Cut';
 import { FilmResolver } from '../resolvers/Film';
 import { UserResolver } from '../resolvers/User';
@@ -9,6 +13,7 @@ import { UserResolver } from '../resolvers/User';
 export interface MyContext {
   req: Request;
   res: Response;
+  verifiedUser: JwtVerifiedUser;
 }
 
 const createApolloServer = async (): Promise<ApolloServer> => {
@@ -18,7 +23,8 @@ const createApolloServer = async (): Promise<ApolloServer> => {
     }),
     plugins: [ApolloServerPluginLandingPageLocalDefault()],
     context: ({ req, res }) => {
-      return { req, res };
+      const verified = verifyAccessTokenFromReqHeaders(req.headers);
+      return { req, res, verifiedUser: verified };
     },
   });
 };
