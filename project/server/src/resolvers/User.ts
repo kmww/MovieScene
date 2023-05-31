@@ -13,7 +13,11 @@ import {
 } from 'type-graphql';
 import { MyContext } from '../apollo/createApolloServer';
 import User from '../entities/User';
-import { createAccessToken } from '../utils/jwt-auth';
+import {
+  createAccessToken,
+  createRefreshToken,
+  setRefreshTokenHeader,
+} from '../utils/jwt-auth';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
 
 @InputType()
@@ -78,6 +82,7 @@ export class UserResolver {
   @Mutation(() => LoginResponse)
   public async login(
     @Arg('loginInput') loginInput: LoginInput,
+    @Ctx() { res }: MyContext,
   ): Promise<LoginResponse> {
     const { emailOrUsername, password } = loginInput;
 
@@ -100,6 +105,9 @@ export class UserResolver {
       };
 
     const accessToken = createAccessToken(user);
+    const refreshToken = createRefreshToken(user);
+
+    setRefreshTokenHeader(res, refreshToken);
 
     return { user, accessToken };
   }
