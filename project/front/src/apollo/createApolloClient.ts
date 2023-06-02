@@ -1,28 +1,42 @@
 import {
-  ApolloClient,
   NormalizedCacheObject,
   HttpLink,
   from,
+  fromPromise,
+  ApolloClient,
 } from '@apollo/client';
 import { createApolloCache } from './createApolloCache';
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
+import { refreshAccessToken } from './auth';
 
-const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
-  if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, locations, path }) =>
-      console.log(`[GraphQL error]: -> ${operation.operationName}
+let apolloClient: ApolloClient<NormalizedCacheObject>;
+
+const errorLink = onError(
+  ({ graphQLErrors, networkError, operation, forward }) => {
+    if (graphQLErrors) {
+      if (
+        graphQLErrors.find((error) => error.message === 'access token expired')
+      ) {
+        return fromPromise(refreshAccessToken(apolloClient, operation))
+          .filter((result) => !!result)
+          .flatMap(() => forward(operation));
+      }
+
+      graphQLErrors.forEach(({ message, locations, path }) =>
+        console.log(`[GraphQL error]: -> ${operation.operationName}
     Message: ${message}, Query: ${path}, Location: ${JSON.stringify(
-        locations,
-      )}`),
-    );
-  }
+          locations,
+        )}`),
+      );
+    }
 
-  if (networkError) {
-    console.log(`[networkError]: -> ${operation.operationName}
+    if (networkError) {
+      console.log(`[networkError]: -> ${operation.operationName}
     Message: ${networkError.message}`);
-  }
-});
+    }
+  },
+);
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:4000/graphql',
@@ -40,9 +54,11 @@ const authLink = setContext((request, prevContext) => {
 });
 
 export const createApolloClient = (): ApolloClient<NormalizedCacheObject> => {
-  return new ApolloClient({
+  apolloClient = new ApolloClient({
     cache: createApolloCache(),
     uri: 'http://localhost:4000/graphql',
     link: from([authLink, errorLink, httpLink]),
   });
+
+  return apolloClient;
 };
