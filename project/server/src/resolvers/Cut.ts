@@ -54,4 +54,10 @@ export class CutResolver {
     }
     return false;
   }
+
+  @FieldResolver(() => Int)
+  async voteCount(@Root() cut: Cut): Promise<number> {
+    const count = await CutVote.count({ where: { cutId: cut.id } });
+    return count;
+  }
 }
