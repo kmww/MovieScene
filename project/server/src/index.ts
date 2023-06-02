@@ -1,12 +1,14 @@
 import express from 'express';
 import http from 'http';
 import 'reflect-metadata';
+import cookieParser from 'cookie-parser';
 import createApolloServer from './apollo/createApolloServer';
 import { createDB } from './db/db-client';
 
 async function main() {
   await createDB();
   const app = express();
+  app.use(cookieParser());
 
   const apolloServer = await createApolloServer();
   await apolloServer.start();

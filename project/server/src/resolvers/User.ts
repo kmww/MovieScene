@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
 import { IsEmail, IsString } from 'class-validator';
 import {
   Arg,
@@ -14,6 +15,7 @@ import {
 import { MyContext } from '../apollo/createApolloServer';
 import User from '../entities/User';
 import {
+  REFRESH_JWT_SECRET_KEY,
   createAccessToken,
   createRefreshToken,
   setRefreshTokenHeader,
@@ -53,6 +55,11 @@ class LoginResponse {
 
   @Field({ nullable: true })
   accessToken?: string;
+}
+
+@ObjectType({ description: '액세스 토큰 새로고침 반환 데이터' })
+class RefreshAccessTokenResponse {
+  @Field() accessToken: string;
 }
 
 @Resolver(User)
@@ -112,5 +119,43 @@ export class UserResolver {
     setRefreshTokenHeader(res, refreshToken);
 
     return { user, accessToken };
+  }
+
+  @Mutation(() => RefreshAccessTokenResponse, { nullable: true })
+  async refreshAccessToken(
+    @Ctx() { req, redis, res }: MyContext,
+  ): Promise<RefreshAccessTokenResponse | null> {
+    const refreshToken = req.cookies.refreshtoken;
+    if (!refreshToken) return null;
+
+    let tokenData: any = null;
+    try {
+      tokenData = jwt.verify(refreshToken, REFRESH_JWT_SECRET_KEY);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+
+    if (!tokenData) return null;
+
+    // redis의 user.id로 저장된 토큰 조회
+    const storedRefreshToken = await redis.get(String(tokenData.userId));
+    if (!storedRefreshToken) return null;
+    if (!(storedRefreshToken === refreshToken)) return null;
+    const user = await User.findOne({ where: { id: tokenData.userId } });
+    if (!user) return null;
+
+    const newAccessToken = createAccessToken(user); // 액세스 토큰 생성
+    const newRefreshToken = createRefreshToken(user); // 리프레시 토큰 생성
+    await redis.set(String(user.id), newRefreshToken); // 리프레시 토큰 레디스 저장
+
+    // 쿠키에 리프레시 토큰 적재
+    res.cookie('refreshtoken', newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+    });
+
+    return { accessToken: newAccessToken };
   }
 }
