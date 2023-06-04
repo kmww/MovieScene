@@ -11,7 +11,12 @@ import {
 } from '@chakra-ui/react';
 import { ReactElement } from 'react';
 import { FaHeart } from 'react-icons/fa';
-import { useVoteMutation } from '../../generated/graphql';
+import {
+  CutDocument,
+  CutQuery,
+  CutQueryVariables,
+  useVoteMutation,
+} from '../../generated/graphql';
 
 interface FilmCutInfoProps {
   cutImg: string;
@@ -29,6 +34,31 @@ const FilmCutInfo = ({
   const voteButtonColor = useColorModeValue('gray.500', 'gray.400');
   const [vote, { loading: voteLoading }] = useVoteMutation({
     variables: { cutId },
+    update: (cache, fetchResult) => {
+      const currentCut = cache.readQuery<CutQuery, CutQueryVariables>({
+        query: CutDocument,
+        variables: { cutId },
+      });
+      if (currentCut && currentCut.cut) {
+        if (fetchResult.data?.vote) {
+          cache.writeQuery<CutQuery, CutQueryVariables>({
+            query: CutDocument,
+            variables: { cutId: currentCut.cut.id },
+            data: {
+              __typename: 'Query',
+              ...currentCut,
+              cut: {
+                ...currentCut.cut,
+                voteCount: isVoted
+                  ? currentCut.cut.voteCount - 1
+                  : currentCut.cut.voteCount + 1,
+                isVoted: !isVoted,
+              },
+            },
+          });
+        }
+      }
+    },
   });
 
   return (

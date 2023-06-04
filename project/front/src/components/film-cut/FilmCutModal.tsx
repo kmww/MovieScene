@@ -50,7 +50,12 @@ const FilmCutModal = ({
           )}
           {!loading && !data && <Center>데이터를 불러오지 못했습니다.</Center>}
           {data && data.cut && (
-            <FilmCutInfo cutImg={data.cut.src} cutId={data.cut.id} />
+            <FilmCutInfo
+              cutImg={data.cut.src}
+              cutId={data.cut.id}
+              isVoted={data.cut.isVoted}
+              voteCount={data.cut.voteCount}
+            />
           )}
         </ModalBody>
       </ModalContent>
