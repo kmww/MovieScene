@@ -27,6 +27,7 @@ interface FilmCutInfoProps {
   cutId: number;
   isVoted?: boolean;
   voteCount?: number;
+  reviews: CutQuery['cutReviews'];
 }
 
 const FilmCutInfo = ({
@@ -34,6 +35,7 @@ const FilmCutInfo = ({
   cutId,
   isVoted = false,
   voteCount = 0,
+  reviews,
 }: FilmCutInfoProps): ReactElement => {
   const toast = useToast();
   const voteButtonColor = useColorModeValue('gray.500', 'gray.400');

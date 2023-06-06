@@ -55,6 +55,7 @@ const FilmCutModal = ({
               cutId={data.cut.id}
               isVoted={data.cut.isVoted}
               voteCount={data.cut.voteCount}
+              reviews={data.cutReviews}
             />
           )}
         </ModalBody>
