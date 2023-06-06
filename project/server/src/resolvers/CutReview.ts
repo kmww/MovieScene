@@ -1,16 +1,20 @@
 import { IsInt, IsString } from 'class-validator';
 import {
   Arg,
+  Args,
+  ArgsType,
   Ctx,
   Field,
   FieldResolver,
   InputType,
   Int,
   Mutation,
+  Query,
   Resolver,
   Root,
   UseMiddleware,
 } from 'type-graphql';
+import { Not } from 'typeorm';
 import User from '../entities/User';
 import { MyContext } from '../apollo/createApolloServer';
 import { CutReview } from '../entities/CutReview';
@@ -27,8 +31,50 @@ class CreateOrUpdateCutReviewInput {
   contents: string;
 }
 
+@ArgsType()
+class PaginationArgs {
+  @Field(() => Int, { defaultValue: 2 })
+  take: number;
+
+  @Field(() => Int, { nullable: true })
+  skip?: number;
+
+  @Field(() => Int) cutId: number;
+}
+
 @Resolver(CutReview)
 export class CutReviewResolver {
+  @Query(() => [CutReview])
+  async cutReviews(
+    @Args() { take, skip, cutId }: PaginationArgs,
+    @Ctx() { verifiedUser }: MyContext,
+  ): Promise<CutReview[]> {
+    let realTake = 2;
+    let reviewHistory: CutReview | undefined;
+    if (verifiedUser && verifiedUser.userId) {
+      reviewHistory = await CutReview.findOne({
+        where: { user: { id: verifiedUser.userId }, cutId },
+      });
+    }
+    if (reviewHistory) {
+      realTake = Math.min(take, 1);
+    }
+    const reviews = await CutReview.find({
+      where: reviewHistory
+        ? {
+            cutId,
+            id: Not(reviewHistory.id),
+          }
+        : { cutId },
+      skip,
+      take: realTake,
+      order: { createdAt: 'DESC' },
+    });
+
+    if (reviewHistory) return [reviewHistory, ...reviews];
+    return reviews;
+  }
+
   @Mutation(() => CutReview, { nullable: true })
   @UseMiddleware(isAuthenticated)
   async createOrUpdateCutReview(
