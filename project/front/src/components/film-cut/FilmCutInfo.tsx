@@ -10,6 +10,8 @@ import {
   useColorModeValue,
   useToast,
   useDisclosure,
+  Center,
+  SimpleGrid,
 } from '@chakra-ui/react';
 import { ReactElement, useMemo } from 'react';
 import { FaHeart } from 'react-icons/fa';
@@ -21,6 +23,7 @@ import {
   useVoteMutation,
 } from '../../generated/graphql';
 import FilmCutReviewRegiModal from './FilmCutReviewRegiModal';
+import FilmCutReview from './FilmCutReview';
 
 interface FilmCutInfoProps {
   cutImg: string;
@@ -76,6 +79,7 @@ const FilmCutInfo = ({
   }, [accessToken, userData?.me?.id]);
 
   const reviewRegiDialog = useDisclosure();
+  const deleteAlert = useDisclosure();
 
   return (
     <Box>
@@ -109,6 +113,27 @@ const FilmCutInfo = ({
             </Button>
           </HStack>
         </Flex>
+
+        <Box mt={6}>
+          {!reviews || reviews.length === 0 ? (
+            <Center minH={100}>
+              <Text>가장 먼저 리뷰를 남겨보세요!</Text>
+            </Center>
+          ) : (
+            <SimpleGrid mt={3} spacing={4} columns={{ base: 1, sm: 2 }}>
+              {reviews.slice(0, 2).map((review) => (
+                <FilmCutReview
+                  key={review.id}
+                  author={review.user.username}
+                  contents={review.contents}
+                  isMine={review.isMine}
+                  onEditClick={reviewRegiDialog.onOpen}
+                  onDeleteClick={deleteAlert.onOpen}
+                />
+              ))}
+            </SimpleGrid>
+          )}
+        </Box>
       </Box>
 
       <FilmCutReviewRegiModal
