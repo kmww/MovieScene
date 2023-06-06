@@ -44,13 +44,11 @@ const FilmCutReviewRegiModal = ({
   const onSubmit = (formData: CutReviewVars): void => {
     mutation({ variables: formData })
       .then((res) => {
-        console.log(res.data);
         onClose();
       })
       .catch(() => {
         toast({ title: '리뷰 등록 실패', status: 'error' });
       });
-    console.log(formData);
   };
 
   return (
