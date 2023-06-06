@@ -108,6 +108,15 @@ export class CutReviewResolver {
     return (await User.findOne(cutReview.userId))!;
   }
 
+  @FieldResolver(() => Boolean)
+  isMine(
+    @Root() cutReview: CutReview,
+    @Ctx() { verifiedUser }: MyContext,
+  ): boolean {
+    if (!verifiedUser) return false;
+    return cutReview.userId === verifiedUser.userId;
+  }
+
   @Mutation(() => Boolean)
   @UseMiddleware(isAuthenticated)
   async deleteReview(
