@@ -8,13 +8,15 @@ import {
   Heading,
   Image,
   useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
-import { ReactElement } from 'react';
+import { ReactElement, useMemo } from 'react';
 import { FaHeart } from 'react-icons/fa';
 import {
   CutDocument,
   CutQuery,
   CutQueryVariables,
+  useMeQuery,
   useVoteMutation,
 } from '../../generated/graphql';
 
@@ -31,6 +33,7 @@ const FilmCutInfo = ({
   isVoted = false,
   voteCount = 0,
 }: FilmCutInfoProps): ReactElement => {
+  const toast = useToast();
   const voteButtonColor = useColorModeValue('gray.500', 'gray.400');
   const [vote, { loading: voteLoading }] = useVoteMutation({
     variables: { cutId },
@@ -61,6 +64,13 @@ const FilmCutInfo = ({
     },
   });
 
+  const accessToken = localStorage.getItem('access_token');
+  const { data: userData } = useMeQuery({ skip: !accessToken });
+  const isLoggedIn = useMemo(() => {
+    if (accessToken) return userData?.me?.id;
+    return false;
+  }, [accessToken, userData?.me?.id]);
+
   return (
     <Box>
       <AspectRatio ratio={16 / 9}>
@@ -76,7 +86,15 @@ const FilmCutInfo = ({
               color={isVoted ? 'pink.400' : voteButtonColor}
               leftIcon={<FaHeart />}
               isLoading={voteLoading}
-              onClick={() => vote()}
+              onClick={() => {
+                if (isLoggedIn) vote();
+                else {
+                  toast({
+                    status: 'warning',
+                    description: '해당 기능은 로그인 후 이용해주세요.',
+                  });
+                }
+              }}
             >
               <Text>{voteCount}</Text>
             </Button>
