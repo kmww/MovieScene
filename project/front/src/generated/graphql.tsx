@@ -299,7 +299,7 @@ export type FilmsQuery = { __typename?: 'Query', films: { __typename?: 'Paginate
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, email: string, updatedAt: string, createdAt: string } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, email: string, profileImage?: string | null, updatedAt: string, createdAt: string } | null };
 
 
 export const CreateOrUpdateCutReviewDocument = gql`
@@ -763,6 +763,7 @@ export const MeDocument = gql`
     id
     username
     email
+    profileImage
     updatedAt
     createdAt
   }
