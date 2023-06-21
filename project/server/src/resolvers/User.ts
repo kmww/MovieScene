@@ -12,6 +12,8 @@ import {
   Resolver,
   UseMiddleware,
 } from 'type-graphql';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
+import { createWriteStream } from 'fs';
 import { MyContext } from '../apollo/createApolloServer';
 import User from '../entities/User';
 import {
@@ -169,5 +171,30 @@ export class UserResolver {
     });
 
     return { accessToken: newAccessToken };
+  }
+
+  @UseMiddleware(isAuthenticated)
+  @Mutation(() => Boolean)
+  async uploadProfileImage(
+    @Ctx() { verifiedUser }: MyContext,
+    @Arg('file', () => GraphQLUpload)
+    { createReadStream, filename }: FileUpload,
+  ): Promise<boolean> {
+    const realFileName = verifiedUser.userId + filename;
+    const filePath = `public/${realFileName}`;
+
+    return new Promise((resolve, reject) =>
+      // eslint-disable-next-line no-promise-executor-return
+      createReadStream()
+        .pipe(createWriteStream(filePath))
+        .on('finish', async () => {
+          await User.update(
+            { id: verifiedUser.userId },
+            { profileImage: realFileName },
+          );
+          return resolve(true);
+        })
+        .on('error', () => reject(Error('file upload failed'))),
+    );
   }
 }
