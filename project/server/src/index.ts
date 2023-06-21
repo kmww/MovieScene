@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import 'reflect-metadata';
 import cookieParser from 'cookie-parser';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import createApolloServer from './apollo/createApolloServer';
 import { createDB } from './db/db-client';
 
@@ -9,6 +10,7 @@ async function main() {
   await createDB();
   const app = express();
   app.use(cookieParser());
+  app.use(graphqlUploadExpress({ maxFileSize: 1024 * 1000 * 5, maxFiles: 1 }));
 
   const apolloServer = await createApolloServer();
   await apolloServer.start();
