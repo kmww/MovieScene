@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import { graphqlUploadExpress } from 'graphql-upload';
 import createApolloServer from './apollo/createApolloServer';
 import { createDB } from './db/db-client';
+import { createSchema } from './apollo/createSchema';
 
 async function main() {
   await createDB();
@@ -13,7 +14,8 @@ async function main() {
   app.use(cookieParser());
   app.use(graphqlUploadExpress({ maxFileSize: 1024 * 1000 * 5, maxFiles: 1 }));
 
-  const apolloServer = await createApolloServer();
+  const schema = await createSchema();
+  const apolloServer = await createApolloServer(schema);
   await apolloServer.start();
   apolloServer.applyMiddleware({
     app,
