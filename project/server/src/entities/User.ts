@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { CutVote } from './CutVote';
 import { CutReview } from './CutReview';
+import Notification from './Notification';
 
 @ObjectType()
 @Entity()
@@ -29,6 +30,10 @@ export default class User extends BaseEntity {
   @Column({ comment: '비밀번호' })
   password: string;
 
+  @Column({ comment: '프로필 사진 경로', nullable: true })
+  @Field({ description: '프로필 사진 경로', nullable: true })
+  profileImage: string;
+
   @Field(() => String, { description: '생성 일자' })
   @CreateDateColumn({ comment: '생성 일자' })
   createdAt: Date;
@@ -43,7 +48,6 @@ export default class User extends BaseEntity {
   @OneToMany(() => CutReview, (cutReview) => cutReview.user)
   cutReviews: CutReview[];
 
-  @Column({ comment: '프로필 사진 경로', nullable: true })
-  @Field({ description: '프로필 사진 경로', nullable: true })
-  profileImage: string;
+  @OneToMany(() => Notification, (noti) => noti.user)
+  notifications: Notification[];
 }
