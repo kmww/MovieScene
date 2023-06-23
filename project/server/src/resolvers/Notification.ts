@@ -3,8 +3,12 @@ import {
   Ctx,
   Int,
   Mutation,
+  PubSub,
+  Publisher,
   Query,
   Resolver,
+  Root,
+  Subscription,
   UseMiddleware,
 } from 'type-graphql';
 import { MyContext } from '../apollo/createApolloServer';
@@ -32,11 +36,18 @@ export class NotificationResolver {
   async createNotification(
     @Arg('userId', () => Int) userId: number,
     @Arg('text') text: string,
+    @PubSub('NOTIFICATION_CREATED') publish: Publisher<Notification>,
   ): Promise<Notification> {
     const newNoti = await Notification.create({
       text,
       userId,
     }).save();
+    await publish(newNoti);
     return newNoti;
+  }
+
+  @Subscription({ topics: 'NOTIFICATION_CREATED' })
+  newNotification(@Root() notificationPayload: Notification): Notification {
+    return notificationPayload;
   }
 }
