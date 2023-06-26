@@ -7,11 +7,11 @@ import {
   Menu,
   MenuButton,
   MenuDivider,
-  MenuItem,
   MenuList,
   Text,
 } from '@chakra-ui/react';
 import { FaBell } from 'react-icons/fa';
+import NotificationItem from './NotificationItem';
 
 const Notification = (): ReactElement => {
   const { data, loading } = useNotificationsQuery();
@@ -44,16 +44,7 @@ const Notification = (): ReactElement => {
               </Text>
             ) : (
               data.notifications.map((noti) => (
-                <MenuItem cursor="pointer">
-                  <Box position="relative" w="100%">
-                    <Text>{noti.text}</Text>
-                    <Text fontSize="xs" color="gray.500">
-                      {new Date(
-                        parseInt(noti.createdAt, 10),
-                      ).toLocaleDateString()}
-                    </Text>
-                  </Box>
-                </MenuItem>
+                <NotificationItem key={noti.id} notification={noti} />
               ))
             )}
           </>
