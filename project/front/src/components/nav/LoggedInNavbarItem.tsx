@@ -18,6 +18,7 @@ import {
   useMeQuery,
   useUploadProfileImageMutation,
 } from '../../generated/graphql';
+import Notification from '../notification/Notification';
 
 const LoggedInNavbarItem = (): ReactElement => {
   const client = useApolloClient();
@@ -58,7 +59,7 @@ const LoggedInNavbarItem = (): ReactElement => {
   return (
     <Stack justify="flex-end" alignItems="center" direction="row" spacing={3}>
       <ColorModeSwitcher />
-
+      <Notification />
       <Menu>
         <MenuButton as={Button} rounded="fill" variant="link" cursor="pointer">
           <Avatar size="sm" src={profileImage} />
