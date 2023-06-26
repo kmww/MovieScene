@@ -104,6 +104,7 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createNotification: Notification;
   createOrUpdateCutReview?: Maybe<CutReview>;
   deleteReview: Scalars['Boolean'];
   login: LoginResponse;
@@ -112,6 +113,12 @@ export type Mutation = {
   signUp: User;
   uploadProfileImage: Scalars['Boolean'];
   vote: Scalars['Boolean'];
+};
+
+
+export type MutationCreateNotificationArgs = {
+  text: Scalars['String'];
+  userId: Scalars['Int'];
 };
 
 
@@ -144,6 +151,15 @@ export type MutationVoteArgs = {
   cutId: Scalars['Int'];
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  createdAt: Scalars['String'];
+  id: Scalars['Int'];
+  text: Scalars['String'];
+  updatedAt: Scalars['String'];
+  userId: Scalars['Float'];
+};
+
 export type PaginatedFilms = {
   __typename?: 'PaginatedFilms';
   cursor?: Maybe<Scalars['Int']>;
@@ -158,6 +174,8 @@ export type Query = {
   film?: Maybe<Film>;
   films: PaginatedFilms;
   me?: Maybe<User>;
+  /** 세션에 해당되는 유저의 모든 알림을 가져옵니다. */
+  notifications: Array<Notification>;
 };
 
 
@@ -198,6 +216,11 @@ export type SignUpInput = {
   email: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  newNotification: Notification;
 };
 
 export type User = {
@@ -300,6 +323,11 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, email: string, profileImage?: string | null, updatedAt: string, createdAt: string } | null };
+
+export type NotificationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NotificationsQuery = { __typename?: 'Query', notifications: Array<{ __typename?: 'Notification', id: number, userId: number, text: string, createdAt: string, updatedAt: string }> };
 
 
 export const CreateOrUpdateCutReviewDocument = gql`
@@ -796,3 +824,41 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const NotificationsDocument = gql`
+    query notifications {
+  notifications {
+    id
+    userId
+    text
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useNotificationsQuery__
+ *
+ * To run a query within a React component, call `useNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNotificationsQuery(baseOptions?: Apollo.QueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+      }
+export function useNotificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+        }
+export type NotificationsQueryHookResult = ReturnType<typeof useNotificationsQuery>;
+export type NotificationsLazyQueryHookResult = ReturnType<typeof useNotificationsLazyQuery>;
+export type NotificationsQueryResult = Apollo.QueryResult<NotificationsQuery, NotificationsQueryVariables>;
