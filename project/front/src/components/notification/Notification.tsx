@@ -1,5 +1,9 @@
-import { ReactElement } from 'react';
-import { useNotificationsQuery } from '../../generated/graphql';
+import { ReactElement, useEffect } from 'react';
+import {
+  NewNotificationDocument,
+  NewNotificationSubscription,
+  useNotificationsQuery,
+} from '../../generated/graphql';
 import {
   Box,
   CircularProgress,
@@ -9,12 +13,42 @@ import {
   MenuDivider,
   MenuList,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import { FaBell } from 'react-icons/fa';
 import NotificationItem from './NotificationItem';
 
 const Notification = (): ReactElement => {
-  const { data, loading } = useNotificationsQuery();
+  const { data, loading, subscribeToMore } = useNotificationsQuery();
+
+  const toast = useToast({
+    position: 'top-right',
+    isClosable: true,
+    status: 'info',
+  });
+
+  useEffect(() => {
+    if (subscribeToMore) {
+      subscribeToMore<NewNotificationSubscription>({
+        document: NewNotificationDocument,
+        updateQuery: (prev, { subscriptionData }) => {
+          const newNoti = subscriptionData.data.newNotification;
+          toast({
+            title: `새 알림이 도착했습니다!`,
+            description:
+              newNoti.text.length > 30
+                ? `${newNoti.text.slice(0, 30)}`
+                : newNoti.text,
+          });
+          return {
+            __typename: 'Query',
+            notifications: [newNoti, ...prev.notifications],
+          };
+        },
+      });
+    }
+  }, [subscribeToMore]);
+
   return (
     <Menu placement="bottom-end" closeOnSelect={false} isLazy>
       <Box position="relative">
