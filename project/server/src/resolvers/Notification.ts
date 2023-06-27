@@ -10,7 +10,9 @@ import {
   Root,
   Subscription,
   UseMiddleware,
+  ResolverFilterData,
 } from 'type-graphql';
+import { MySubscriptionContext } from '../apollo/createSubscriptionSever';
 import { MyContext } from '../apollo/createApolloServer';
 import Notification from '../entities/Notification';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
@@ -46,7 +48,19 @@ export class NotificationResolver {
     return newNoti;
   }
 
-  @Subscription({ topics: 'NOTIFICATION_CREATED' })
+  @Subscription({
+    topics: 'NOTIFICATION_CREATED',
+    filter: ({
+      payload,
+      context,
+    }: ResolverFilterData<Notification, null, MySubscriptionContext>) => {
+      const { verifiedUser } = context;
+      if (verifiedUser && payload && payload.userId === verifiedUser.userId) {
+        return true;
+      }
+      return false;
+    },
+  })
   newNotification(@Root() notificationPayload: Notification): Notification {
     return notificationPayload;
   }
