@@ -18,6 +18,7 @@ import {
   useLoginMutation,
 } from '../../generated/graphql';
 import { useNavigate } from 'react-router-dom';
+import { COLORS } from '../../constants';
 
 const LoginForm = (): ReactElement => {
   const {
@@ -49,13 +50,13 @@ const LoginForm = (): ReactElement => {
     <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
       <Stack align="center">
         <Heading fontSize="4xl">지브리 명장면 사이트</Heading>
-        <Text fontSize="lg" color="gray.600">
+        <Text fontSize="lg" color={COLORS.GRAY600}>
           감상평과 좋아요를 눌러보세요!
         </Text>
       </Stack>
       <Box
         rounded="lg"
-        bg={useColorModeValue('white', 'gray.700')}
+        bg={useColorModeValue(COLORS.WHITE, COLORS.GRAY700)}
         boxShadow="lg"
         p={8}
       >

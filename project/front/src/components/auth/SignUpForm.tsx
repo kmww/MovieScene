@@ -19,6 +19,7 @@ import {
 } from '../../generated/graphql';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { COLORS } from '../../constants';
 
 const SignUpRealForm = () => {
   const [signUp, { loading }] = useSignUpMutation();
@@ -119,14 +120,14 @@ const SignUpForm = (): ReactElement => {
     <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
       <Stack align="center">
         <Heading fontSize="4xl">계정 생성</Heading>
-        <Text fontSize="lg" color="gray.600">
+        <Text fontSize="lg" color={COLORS.GRAY600}>
           환영합니다!
         </Text>
       </Stack>
 
       <Box
         rounded="lg"
-        bg={useColorModeValue('white', 'gray.700')}
+        bg={useColorModeValue(COLORS.WHITE, COLORS.GRAY700)}
         boxShadow="lg"
         minW="lg"
         p={8}

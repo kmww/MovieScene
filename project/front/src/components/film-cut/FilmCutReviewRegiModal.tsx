@@ -20,6 +20,7 @@ import {
   CreateOrUpdateCutReviewMutationVariables as CutReviewVars,
   useCreateOrUpdateCutReviewMutation as useCreateCutReview,
 } from '../../generated/graphql';
+import { COLORS } from '../../constants';
 interface FilmCutReviewRegiModalProps {
   cutId: number;
   isOpen: boolean;
@@ -108,7 +109,11 @@ const FilmCutReviewRegiModal = ({
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
-            <Button colorScheme="teal" type="submit" isDisabled={loading}>
+            <Button
+              colorScheme={COLORS.TEAL}
+              type="submit"
+              isDisabled={loading}
+            >
               등록
             </Button>
             <Button onClick={onClose}>취소</Button>

@@ -25,6 +25,7 @@ import {
 import FilmCutReviewRegiModal from './FilmCutReviewRegiModal';
 import FilmCutReview from './FilmCutReview';
 import FilmCutReviewDelete from './FilmCutReviewDelete';
+import { COLORS } from '../../constants';
 
 interface FilmCutInfoProps {
   cutImg: string;
@@ -42,7 +43,7 @@ const FilmCutInfo = ({
   reviews,
 }: FilmCutInfoProps): ReactElement => {
   const toast = useToast();
-  const voteButtonColor = useColorModeValue('gray.500', 'gray.400');
+  const voteButtonColor = useColorModeValue(COLORS.GRAY500, COLORS.GRAY400);
   const [vote, { loading: voteLoading }] = useVoteMutation({
     variables: { cutId },
     update: (cache, fetchResult) => {
@@ -94,7 +95,7 @@ const FilmCutInfo = ({
           <HStack spacing={1} alignItems="center">
             <Button
               aria-label="like-this-cut-button"
-              color={isVoted ? 'pink.400' : voteButtonColor}
+              color={isVoted ? COLORS.PINK400 : voteButtonColor}
               leftIcon={<FaHeart />}
               isLoading={voteLoading}
               onClick={() => {

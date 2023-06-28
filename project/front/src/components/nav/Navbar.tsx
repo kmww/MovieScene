@@ -11,6 +11,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { ColorModeSwitcher } from '../ColorModeSwitcher';
 import { useMeQuery } from '../../generated/graphql';
 import LoggedInNavbarItem from './LoggedInNavbarItem';
+import { COLORS } from '../../constants';
 
 const Navbar = (): ReactElement => {
   const accessToken = localStorage.getItem('access_token');
@@ -25,16 +26,16 @@ const Navbar = (): ReactElement => {
       zIndex={10}
       position="fixed"
       w="100%"
-      bg={useColorModeValue('white', 'gray.800')}
+      bg={useColorModeValue(COLORS.WHITE, COLORS.GRAY800)}
       borderBottom={1}
       borderStyle="solid"
-      borderColor={useColorModeValue('gary.200', 'gray.700')}
+      borderColor={useColorModeValue(COLORS.GRAY200, COLORS.GRAY700)}
       py={{ base: 2 }}
       px={{ base: 4 }}
     >
       <Flex
         maxW={960}
-        color={useColorModeValue('gray.600', 'white')}
+        color={useColorModeValue(COLORS.GRAY600, COLORS.WHITE)}
         minH="60px"
         align="center"
         m="auto"
@@ -45,7 +46,7 @@ const Navbar = (): ReactElement => {
             to="/"
             fontFamily="heading"
             fontWeight="bold"
-            color={useColorModeValue('gary.800', 'white')}
+            color={useColorModeValue(COLORS.GRAY800, COLORS.WHITE)}
           >
             BestCut
           </Link>
@@ -69,7 +70,7 @@ const Navbar = (): ReactElement => {
               display={{ base: 'none', md: 'inline-flex' }}
               fontSize="sm"
               fontWeight={600}
-              colorScheme="teal"
+              colorScheme={COLORS.TEAL}
               as={RouterLink}
               to="/signup"
             >

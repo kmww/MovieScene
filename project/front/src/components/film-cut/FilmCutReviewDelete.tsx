@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   Button,
 } from '@chakra-ui/react';
+import { COLORS } from '../../constants';
 
 interface FilmCutReviewDeleteAlertProps {
   target?: CutQuery['cutReviews'][0];
@@ -52,7 +53,7 @@ const FilmCutReviewDelete = ({
           <Button ref={cancelRef} onClick={onClose}>
             취소
           </Button>
-          <Button colorScheme="red" onClick={handleDelete} ml={3}>
+          <Button colorScheme={COLORS.RED} onClick={handleDelete} ml={3}>
             삭제
           </Button>
         </AlertDialogFooter>
